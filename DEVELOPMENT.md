@@ -1,6 +1,6 @@
 # Development notes
 
-For people working on the code. The customer-facing description is `README.md`.
+For people working on the code. The customer-facing description is `.actor/README.md` (the Apify Store README); `README.md` is the GitHub overview.
 
 ## Layout
 

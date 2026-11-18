@@ -1,7 +1,7 @@
 """Fetching profile and post pages the way a logged-out Chrome visitor does, and deciding what a
 response means.
 
-Rules (kept on purpose, see README):
+Rules (kept on purpose, see DEVELOPMENT.md and .actor/README.md):
 - No login, no account cookies, no tokens, no private API. Each proxy IP gets its own curl_cffi session
   with Chrome impersonation; the only cookies are the anonymous ones Instagram itself sets
   (csrftoken, datr, ig_did).

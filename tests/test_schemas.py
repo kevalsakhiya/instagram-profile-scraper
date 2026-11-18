@@ -33,21 +33,21 @@ def test_dataset_views_use_real_fields():
 
 
 def test_every_output_field_is_documented_in_the_readme():
-    readme = (ROOT / "README.md").read_text()
+    readme = (ACTOR / "README.md").read_text()
     table = readme[readme.index("## Output fields") :]
     for field in FIELDS:
         assert f"`{field}`" in table, field
 
 
 def test_every_error_code_is_in_the_readme():
-    readme = (ROOT / "README.md").read_text()
+    readme = (ACTOR / "README.md").read_text()
     codes = [v for k, v in vars(output).items() if k.isupper() and isinstance(v, str) and v not in ("profile", "post")]
     for code in codes:
         assert f"`{code}`" in readme, code
 
 
 def test_events_in_readme_pricing():
-    readme = (ROOT / "README.md").read_text()
+    readme = (ACTOR / "README.md").read_text()
     pricing = readme[readme.index("## Pricing") :]
     for event in EVENTS:
         assert re.search(rf"\| `{event}` \|", pricing), event
