@@ -1,0 +1,52 @@
+{
+  "budweiser": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/budweiser/",
+    "status": 200
+  },
+  "nasa": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/nasa/",
+    "status": 200
+  },
+  "nike": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/nike/",
+    "status": 200
+  },
+  "nouser": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/dataji_no_such_user_8812x/",
+    "status": 200
+  },
+  "post_missing": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/p/DzzzzzzzzzA/",
+    "status": 200
+  },
+  "post_nasa_carousel": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/p/DfSi56IFwZK/",
+    "status": 200
+  },
+  "post_nasa_collab": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/p/Df3Rp0bKNdr/",
+    "status": 200
+  },
+  "post_nasa_image": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/p/DfahZrMjAqq/",
+    "status": 200
+  },
+  "post_nasa_reel": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/reel/Dfc1mYxFevS/",
+    "status": 200
+  },
+  "post_natgeo_carousel": {
+    "location": null,
+    "requestedUrl": "https://www.instagram.com/p/Df147tCiAyB/",
+    "status": 200
+  }
+}

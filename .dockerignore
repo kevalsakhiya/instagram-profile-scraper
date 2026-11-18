@@ -1,0 +1,10 @@
+.git
+.venv
+storage
+tests
+tools
+__pycache__/
+*.py[cod]
+.pytest_cache/
+requirements-dev.txt
+raw

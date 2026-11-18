@@ -1,0 +1,31 @@
+{
+    "$schema": "https://apify.com/schemas/v1/output.ide.json",
+    "actorOutputSchemaVersion": 1,
+    "title": "Output schema",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "All rows",
+            "description": "Profile rows, post rows and free error rows. The recordType column says which is which.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        },
+        "profiles": {
+            "type": "string",
+            "title": "Profiles",
+            "description": "Followers, posts, engagement rate, average likes and comments, posting frequency.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?view=profiles"
+        },
+        "posts": {
+            "type": "string",
+            "title": "Posts",
+            "description": "Likes, comments, type, date and caption of each post.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?view=posts"
+        },
+        "errors": {
+            "type": "string",
+            "title": "Errors",
+            "description": "Why an input or post failed (not found, private, restricted, login required, blocked, invalid input). Error rows are free.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?view=errors"
+        }
+    }
+}

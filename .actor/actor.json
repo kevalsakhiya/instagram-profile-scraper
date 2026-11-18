@@ -1,0 +1,15 @@
+{
+	"$schema": "https://apify.com/schemas/v1/actor.ide.json",
+	"actorSpecification": 1,
+	"name": "instagram-profile-scraper",
+	"title": "Instagram Profile & Engagement Scraper",
+	"description": "Get public Instagram profile stats and post engagement without logging in: followers, following, posts, bio and links, plus likes and comments of the 12 newest posts, average likes and comments, engagement rate and posting frequency. Also scrapes single post and reel links. You only pay for rows delivered; failed inputs are free.",
+	"version": "0.1",
+	"buildTag": "latest",
+	"inputSchema": "./input_schema.json",
+	"outputSchema": "./output_schema.json",
+	"storages": {
+		"dataset": "./dataset_schema.json"
+	},
+	"dockerfile": "../Dockerfile"
+}

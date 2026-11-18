@@ -1,0 +1,52 @@
+{
+    "$schema": "https://apify.com/schemas/v1/input.ide.json",
+    "title": "Instagram Profile & Engagement Scraper",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "usernames": {
+            "title": "Instagram profiles",
+            "type": "array",
+            "description": "Profiles to scrape, one per line: usernames (nasa), @handles (@nasa) or profile links (https://www.instagram.com/nasa/). Each gives one profile row with its stats and engagement figures. Duplicates are removed.",
+            "editor": "stringList",
+            "prefill": ["nasa", "nike"]
+        },
+        "includeRecentPosts": {
+            "title": "Include recent posts",
+            "type": "boolean",
+            "description": "Open each of the newest posts Instagram shows on the profile (up to 12) and return one row per post with its likes and comments. The profile's average likes, average comments, engagement rate and posting frequency are calculated from these posts. Turn off to get profile rows only (cheaper and faster).",
+            "default": true
+        },
+        "maxPostsPerProfile": {
+            "title": "Recent posts per profile",
+            "type": "integer",
+            "description": "How many of the newest posts to open per profile. Logged-out Instagram shows at most 12 (pinned posts included).",
+            "minimum": 0,
+            "maximum": 12,
+            "default": 12
+        },
+        "postUrls": {
+            "title": "Post and reel links",
+            "type": "array",
+            "description": "Single posts to scrape, one per line: https://www.instagram.com/p/..., /reel/... or /tv/... links. Use this for posts older than the 12 newest ones. Each gives one post row.",
+            "editor": "stringList"
+        },
+        "maxConcurrency": {
+            "sectionCaption": "Advanced",
+            "title": "Max concurrency",
+            "type": "integer",
+            "description": "How many profiles or posts are loaded at the same time, each through its own proxy IP. Instagram limits each IP, so keep this low.",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 3
+        },
+        "proxyConfiguration": {
+            "title": "Proxy configuration",
+            "type": "object",
+            "description": "Apify Proxy (datacenter) is used by default. If many rows come back as loginRequired or blocked, switch to the RESIDENTIAL group.",
+            "editor": "proxy",
+            "prefill": { "useApifyProxy": true },
+            "default": { "useApifyProxy": true }
+        }
+    }
+}

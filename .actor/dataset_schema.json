@@ -1,0 +1,80 @@
+{
+    "$schema": "https://apify.com/schemas/v1/dataset.ide.json",
+    "actorSpecification": 1,
+    "fields": {},
+    "views": {
+        "profiles": {
+            "title": "Profiles",
+            "description": "Profile rows (recordType 'profile'). Post rows appear here with empty profile columns; use the Posts tab for them.",
+            "transformation": {
+                "fields": ["profilePicUrl", "username", "fullName", "isVerified", "followersCount", "followingCount", "postsCount", "engagementRatePct", "avgLikes", "avgComments", "postingFrequencyPerWeek", "lastPostAt", "recentPostsAnalysed", "externalUrl", "url", "recordType", "error"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "profilePicUrl": { "label": "Picture", "format": "image" },
+                    "username": { "label": "Username", "format": "text" },
+                    "fullName": { "label": "Name", "format": "text" },
+                    "isVerified": { "label": "Verified", "format": "boolean" },
+                    "followersCount": { "label": "Followers", "format": "number" },
+                    "followingCount": { "label": "Following", "format": "number" },
+                    "postsCount": { "label": "Posts", "format": "number" },
+                    "engagementRatePct": { "label": "Engagement %", "format": "number" },
+                    "avgLikes": { "label": "Avg likes", "format": "number" },
+                    "avgComments": { "label": "Avg comments", "format": "number" },
+                    "postingFrequencyPerWeek": { "label": "Posts / week", "format": "number" },
+                    "lastPostAt": { "label": "Last post", "format": "date" },
+                    "recentPostsAnalysed": { "label": "Posts analysed", "format": "number" },
+                    "externalUrl": { "label": "Link in bio", "format": "link" },
+                    "url": { "label": "Profile", "format": "link" },
+                    "recordType": { "label": "Type", "format": "text" },
+                    "error": { "label": "Error", "format": "text" }
+                }
+            }
+        },
+        "posts": {
+            "title": "Posts",
+            "description": "Post rows (recordType 'post'). Profile rows appear here with empty post columns.",
+            "transformation": {
+                "fields": ["displayUrl", "ownerUsername", "type", "takenAt", "likeCount", "commentCount", "engagementRatePct", "caption", "hashtags", "isCollab", "locationName", "url", "recordType", "error"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "displayUrl": { "label": "Image", "format": "image" },
+                    "ownerUsername": { "label": "Owner", "format": "text" },
+                    "type": { "label": "Type", "format": "text" },
+                    "takenAt": { "label": "Posted", "format": "date" },
+                    "likeCount": { "label": "Likes", "format": "number" },
+                    "commentCount": { "label": "Comments", "format": "number" },
+                    "engagementRatePct": { "label": "Engagement %", "format": "number" },
+                    "caption": { "label": "Caption", "format": "text" },
+                    "hashtags": { "label": "Hashtags", "format": "array" },
+                    "isCollab": { "label": "Collab", "format": "boolean" },
+                    "locationName": { "label": "Location", "format": "text" },
+                    "url": { "label": "Post", "format": "link" },
+                    "recordType": { "label": "Type of row", "format": "text" },
+                    "error": { "label": "Error", "format": "text" }
+                }
+            }
+        },
+        "errors": {
+            "title": "Errors",
+            "description": "Inputs and posts that could not be scraped have an error code. These rows are free. Rows without an error are profiles and posts.",
+            "transformation": {
+                "fields": ["recordType", "inputUrl", "url", "error", "errorMessage", "scrapedAt"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "recordType": { "label": "Type", "format": "text" },
+                    "inputUrl": { "label": "Input", "format": "text" },
+                    "url": { "label": "Link", "format": "link" },
+                    "error": { "label": "Error", "format": "text" },
+                    "errorMessage": { "label": "Why", "format": "text" },
+                    "scrapedAt": { "label": "Checked at", "format": "date" }
+                }
+            }
+        }
+    }
+}
