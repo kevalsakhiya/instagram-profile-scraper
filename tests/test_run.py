@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import copy
 import math
 from dataclasses import dataclass
 from decimal import Decimal
@@ -319,3 +320,52 @@ async def test_platform_reservations():
     assert not platform.reserve(POST_EVENT)
     platform.release(PROFILE_EVENT)
     assert platform.reserve(POST_EVENT) and platform.reserve(POST_EVENT) and not platform.reserve(PROFILE_EVENT)
+
+
+class SnapshotDuringPushActor(FakeActor):
+    """Saves RUN_STATE while a charged push is in flight, as a migration's PERSIST_STATE event can."""
+
+    def __init__(self, state: dict, event: str) -> None:
+        super().__init__()
+        self.state, self.event, self.snapshot = state, event, None
+
+    async def push_data(self, data, charged_event_name=None):
+        if charged_event_name == self.event and self.snapshot is None:
+            self.snapshot = copy.deepcopy(self.state)
+        return await super().push_data(data, charged_event_name)
+
+
+async def _restart_from_snapshot_taken_during_push(event, usernames, posts, max_posts):
+    state: dict = {}
+    first = SnapshotDuringPushActor(state, event)
+    run1 = ScrapeRun(Platform(first), FakeFetcher(), max_posts_per_profile=max_posts, state=state)
+    targets, _ = collect_targets(usernames, posts)
+    await run1.run(targets)
+    assert first.snapshot is not None
+    # The container is killed after the push landed; the platform restarts from the saved state.
+    second = FakeActor()
+    run2 = ScrapeRun(Platform(second), FakeFetcher(), max_posts_per_profile=max_posts, state=first.snapshot)
+    await run2.run(targets)
+    return first, second, run2
+
+
+async def test_restart_after_state_saved_mid_push_never_charges_a_post_twice():
+    first, second, run2 = await _restart_from_snapshot_taken_during_push(POST_EVENT, [], [P + "DfahZrMjAqq/"], 0)
+    assert first.manager.counts[POST_EVENT] == 1
+    assert second.manager.counts[POST_EVENT] == 0, "the post row was pushed and charged again after the restart"
+    assert run2.counts["post"] == 1 and not run2.counts["duplicate"]
+
+
+async def test_restart_after_state_saved_mid_push_counts_the_profile_as_scraped():
+    first, second, run2 = await _restart_from_snapshot_taken_during_push(PROFILE_EVENT, ["nasa"], [], 0)
+    assert first.manager.counts[PROFILE_EVENT] == 1 and second.manager.counts[PROFILE_EVENT] == 0
+    assert run2.counts["profile"] == 1 and not run2.counts["duplicate"]
+    assert run2.summary() == "Done: 1 profile and 0 posts scraped."
+
+
+async def test_restart_after_state_saved_mid_push_of_a_recent_post():
+    first, second, run2 = await _restart_from_snapshot_taken_during_push(POST_EVENT, ["nasa"], [], 2)
+    assert first.manager.counts == {PROFILE_EVENT: 1, POST_EVENT: 2}
+    # Only the profile and its second post were left; the first post is counted, not pushed again.
+    assert second.manager.counts == {PROFILE_EVENT: 1, POST_EVENT: 1}
+    assert run2.counts["post"] == 1 + 1 and rows(second, "profile")[0][0]["recentPostsAnalysed"] == 2

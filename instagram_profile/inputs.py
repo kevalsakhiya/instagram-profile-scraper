@@ -113,6 +113,8 @@ def normalize(raw: str) -> tuple[Target | None, str | None]:
 
 
 def _strings(items) -> list[str]:
+    if isinstance(items, str):  # one string instead of a list: one entry per line, never one per character
+        items = items.splitlines()
     out = []
     for item in items or []:
         if isinstance(item, dict):

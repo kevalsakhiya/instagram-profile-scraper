@@ -79,3 +79,9 @@ def test_collect_targets_dedup_mixed_lists_and_order():
 def test_collect_targets_empty():
     assert collect_targets(None, None) == ([], [])
     assert collect_targets(["", "  "], []) == ([], [])
+
+
+def test_a_single_string_instead_of_a_list_is_not_split_into_characters():
+    targets, problems = collect_targets("nasa\n@nike", "https://www.instagram.com/p/DfahZrMjAqq/")
+    assert [(t.kind, t.value) for t in targets] == [("profile", "nasa"), ("profile", "nike"), ("post", "DfahZrMjAqq")]
+    assert problems == []

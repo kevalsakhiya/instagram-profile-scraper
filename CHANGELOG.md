@@ -10,3 +10,6 @@
 - Free error rows: `notFound`, `privateProfile`, `restricted` (age-gated), `loginRequired`, `blocked`,
   `invalidInput`, `failed`.
 - Logged-out only, curl_cffi Chrome impersonation, one session per proxy IP, at most 2 retries on fresh IPs.
+- Restart safety: a post or profile is recorded in RUN_STATE before its charged push, so state saved while the
+  push is in flight never leads to a second charge, and the row still counts as scraped after the restart.
+- A single string given instead of a list of usernames or post links is read one entry per line.

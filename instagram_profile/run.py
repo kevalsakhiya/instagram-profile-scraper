@@ -33,6 +33,7 @@ ERROR_LABELS = {
     output.FAILED: "failed",
 }
 STAT_KEYS = ("likeCount", "commentCount", "takenAt")
+PUSHED_BY = "pushedBy"  # RUN_STATE: the input key whose row delivered a post
 
 
 class ScrapeRun:
@@ -166,6 +167,10 @@ class ScrapeRun:
             return
 
         user_id = parsed.fields.get("userId")
+        if user_id and self.state["profiles"].get(user_id) == target.input:
+            # This very input's row was pushed just before a restart (RUN_STATE was saved during the push).
+            self._mark_done(target.key, PROFILE)
+            return
         first_input = self.state["profiles"].get(user_id) or self.profiles_in_flight.get(user_id)
         if user_id and first_input:
             self._info(f"'{target.input}' is the same profile as '{first_input}'; skipped (not charged).")
@@ -188,8 +193,14 @@ class ScrapeRun:
             target.input, parsed.fields, stats=stats, recent_urls=[p["url"] for p in parsed.recent]
         )
         if user_id:
+            # Recorded before the push: if RUN_STATE is saved while the push is in flight, a restart
+            # skips this profile instead of charging it twice.
             self.state["profiles"][user_id] = target.input
-        await self.platform.push_charged(row, PROFILE_EVENT)
+        try:
+            await self.platform.push_charged(row, PROFILE_EVENT)
+        except Exception:
+            self.state["profiles"].pop(user_id, None)
+            raise
         self._mark_done(target.key, PROFILE)
 
     async def _recent_post(self, worker: int, profile: Target, post: dict, followers: int | None) -> dict | None:
@@ -197,6 +208,7 @@ class ScrapeRun:
         code = post["shortcode"]
         done_key = f"{profile.key}>{code}"
         if code in self.state["posts"]:
+            self._mark_pushed_before_restart(code, done_key)
             return self.state["posts"][code]
         if done_key in self.done:  # an error row was already pushed for it before a restart
             return None
@@ -213,7 +225,17 @@ class ScrapeRun:
 
     # -- posts -----------------------------------------------------------------------
 
+    def _mark_pushed_before_restart(self, code: str, done_key: str) -> bool:
+        """True when this input's own post row was pushed just before a restart; it is then counted, not redone."""
+        stat = self.state["posts"].get(code)
+        if stat is None or done_key in self.done or stat.get(PUSHED_BY) != done_key:
+            return False
+        self._mark_done(done_key, POST)
+        return True
+
     async def _single_post(self, worker: int, target: Target) -> None:
+        if self._mark_pushed_before_restart(target.value, target.key):
+            return
         if target.value in self.state["posts"]:
             self._info(f"'{target.input}' was already scraped in this run; skipped (not charged).")
             self._mark_done(target.key, "duplicate")
@@ -224,7 +246,7 @@ class ScrapeRun:
         lock = self.post_locks.setdefault(code, asyncio.Lock())
         async with lock:
             if code in self.state["posts"]:  # pushed meanwhile through another input
-                if done_key not in self.done:
+                if not self._mark_pushed_before_restart(code, done_key) and done_key not in self.done:
                     self._mark_done(done_key, "duplicate" if done_key.startswith("post:") else None)
                 return self.state["posts"][code]
             target = Target(POST, input_url, url, done_key, code)
@@ -252,9 +274,15 @@ class ScrapeRun:
                 return None
 
             row = output.build_post_row(input_url, parsed.fields, followers=followers)
-            await self.platform.push_charged(row, POST_EVENT)
             stat = {key: row[key] for key in STAT_KEYS}
-            self.state["posts"][code] = stat
+            # Recorded before the push: if RUN_STATE is saved while the push is in flight, a restart
+            # reuses this post instead of pushing and charging it twice.
+            self.state["posts"][code] = {**stat, PUSHED_BY: done_key}
+            try:
+                await self.platform.push_charged(row, POST_EVENT)
+            except Exception:
+                del self.state["posts"][code]
+                raise
             self._mark_done(done_key, POST)
             return stat
 
