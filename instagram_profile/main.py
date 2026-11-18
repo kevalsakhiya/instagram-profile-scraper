@@ -12,9 +12,9 @@ from .fetch import Fetcher
 from .inputs import collect_targets
 from .run import DEFAULT_MAX_POSTS, ScrapeRun
 
-# Datacenter Apify Proxy (the cheapest group). Profile and post pages answered from Apify datacenter
-# and residential US IPs alike on 2026-11-18.
-DEFAULT_PROXY = {"useApifyProxy": True}
+# US residential Apify Proxy. On 2026-11-18 an Apify run on datacenter IPs got login walls for 4 of 5
+# profiles; the same run on residential US IPs got all 5 profiles and 60 posts with no block.
+DEFAULT_PROXY = {"useApifyProxy": True, "apifyProxyGroups": ["RESIDENTIAL"], "apifyProxyCountry": "US"}
 DEFAULT_CONCURRENCY = 3
 MAX_CONCURRENCY = 10
 MAX_POSTS_PER_PROFILE = 12  # logged-out profiles show the 12 newest posts

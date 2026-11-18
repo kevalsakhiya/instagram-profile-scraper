@@ -43,10 +43,10 @@
         "proxyConfiguration": {
             "title": "Proxy configuration",
             "type": "object",
-            "description": "Apify Proxy (datacenter) is used by default. If many rows come back as loginRequired or blocked, switch to the RESIDENTIAL group.",
+            "description": "US residential Apify Proxy is used by default. On 18 Nov 2026 Instagram asked datacenter IPs to log in for 4 of 5 profiles, while residential IPs got all 5.",
             "editor": "proxy",
-            "prefill": { "useApifyProxy": true },
-            "default": { "useApifyProxy": true }
+            "prefill": {"useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"], "apifyProxyCountry": "US"},
+            "default": {"useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"], "apifyProxyCountry": "US"}
         }
     }
 }

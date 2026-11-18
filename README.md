@@ -39,7 +39,7 @@ Get **public Instagram profile stats and post engagement**, with no login and no
 | **Recent posts per profile** | How many of the newest posts to open per profile, 0 to 12. Default 12. |
 | **Post and reel links** | Single posts to scrape: `/p/...`, `/reel/...` or `/tv/...` links. |
 | **Max concurrency** | How many profiles or posts load at the same time, each through its own proxy IP. Default 3. Instagram limits each IP, so keep it low. |
-| **Proxy configuration** | Apify Proxy (datacenter) by default. Switch to the **RESIDENTIAL** group if many rows come back as `loginRequired` or `blocked`. |
+| **Proxy configuration** | US residential Apify Proxy by default. Instagram asks datacenter IPs to log in for most profiles, so keep residential. |
 
 Example input:
 
@@ -50,7 +50,7 @@ Example input:
     "maxPostsPerProfile": 12,
     "postUrls": ["https://www.instagram.com/p/DfahZrMjAqq/"],
     "maxConcurrency": 3,
-    "proxyConfiguration": { "useApifyProxy": true }
+    "proxyConfiguration": { "useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"], "apifyProxyCountry": "US" }
 }
 ```
 
