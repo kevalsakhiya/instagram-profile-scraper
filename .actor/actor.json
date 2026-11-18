@@ -3,7 +3,7 @@
 	"actorSpecification": 1,
 	"name": "instagram-profile-scraper",
 	"title": "Instagram Profile & Engagement Scraper",
-	"description": "Get public Instagram profile stats and post engagement without logging in: followers, following, posts, bio and links, plus likes and comments of the 12 newest posts, average likes and comments, engagement rate and posting frequency. Also scrapes single post and reel links. You only pay for rows delivered; failed inputs are free.",
+	"description": "Public Instagram profile stats and post engagement, no login: followers, following, posts, bio and links, plus likes and comments of the 12 newest posts, engagement rate and posting frequency. Also takes post and reel links. Failed inputs are free.",
 	"version": "0.1",
 	"buildTag": "latest",
 	"inputSchema": "./input_schema.json",
